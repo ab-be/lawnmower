@@ -28,8 +28,6 @@ from contextlib import asynccontextmanager
 #import directories
 from app.core.config import DATA_DIR, FRONTEND_BUILD_DIR #__init__.py is needed in core to be able to import it
 
-#Cache
-from app.utils.helpers import cache, WWWRedirectMiddleware
 
 
 #----------------------------------------
@@ -45,8 +43,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-app.add_middleware(WWWRedirectMiddleware)
 
 
 
@@ -65,5 +61,6 @@ if os.environ.get('ENV_PROD_OR_DEV') is not None and os.environ.get('ENV_PROD_OR
         print("Request headers: ",request.headers)
         print("IP address of the client making the request: ",request.host)
         return FileResponse(os.path.join(FRONTEND_BUILD_DIR, "index.html"))
+
 
 
