@@ -53,14 +53,14 @@ app.add_middleware(
 async def root():
     return {"message": "Hello World"}
 
-#if os.environ.get('ENV_PROD_OR_DEV') is not None and os.environ.get('ENV_PROD_OR_DEV') == "PROD":
-#    #this needs to be mounted and added after other routes are defined, otherwise those routes are not accessible
-#    app.mount("/", StaticFiles(directory=FRONTEND_BUILD_DIR, html=True), name="static")
-#    @app.get("/")
-#    async def serve_frontend(request: Request):
-#        print("Request headers: ",request.headers)
-#        print("IP address of the client making the request: ",request.host)
-#        return FileResponse(os.path.join(FRONTEND_BUILD_DIR, "index.html"))
+#this needs to be mounted and added after other routes are defined, otherwise those routes are not accessible
+app.mount("/", StaticFiles(directory=FRONTEND_BUILD_DIR, html=True), name="static")
+@app.get("/")
+async def serve_frontend(request: Request):
+    print("Request headers: ",request.headers)
+    print("IP address of the client making the request: ",request.host)
+    return FileResponse(os.path.join(FRONTEND_BUILD_DIR, "index.html"))
+
 
 
 
