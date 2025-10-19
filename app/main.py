@@ -49,7 +49,7 @@ app.add_middleware(
 #----------------------------------------
 # Routes
 #----------------------------------------
-@app.get("/")
+@app.get("/home")
 async def root():
     return {"message": "Hello World"}
 
@@ -60,6 +60,7 @@ async def serve_frontend(request: Request):
     print("Request headers: ",request.headers)
     print("IP address of the client making the request: ",request.host)
     return FileResponse(os.path.join(FRONTEND_BUILD_DIR, "index.html"))
+
 
 
 
