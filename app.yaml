@@ -1,0 +1,10 @@
+service: default
+runtime: python39
+instance_class: F1 
+handlers:
+- url: /.*  
+  script: auto
+  secure: always
+entrypoint: gunicorn -w 2 -k uvicorn.workers.UvicornWorker app.main:app
+env_variables:
+  ENV_PROD_OR_DEV: "PROD"
