@@ -1,4 +1,4 @@
-from fastapi import FastAPI, HTTPException, Depends, Request
+from fastapi import FastAPI, HTTPException, Depends, Request, BackgroundTasks, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.gzip import GZipMiddleware
 from fastapi.staticfiles import StaticFiles
@@ -31,9 +31,10 @@ from app.core.config import DATA_DIR, FRONTEND_BUILD_DIR #__init__.py is needed 
 import boto3
 from dotenv import load_dotenv
 import os
+import asyncio
+from dateutil import parser
 
 load_dotenv()
-
 
 
 #----------------------------------------
@@ -59,8 +60,9 @@ app.add_middleware(
 async def root():
     return {"message": "Hello World"}
 
-@app.get("/api/v1/telemetry")
-async def getTelemetry():
+#@app.get("/api/v1/telemetry")
+#async def getTelemetry():
+def getTelemetry():
     try: 
         #prod
         dynamodb = boto3.resource('dynamodb', region_name="eu-north-1")
@@ -75,10 +77,36 @@ async def getTelemetry():
     table = dynamodb.Table('telemetry')
     response = table.scan()
     items = response.get('Items', [])
-    df = pd.DataFrame(items)
+    data = response["Items"]
 
-    return df.to_dict(orient='records')
+    # Parse timestamp column
+    for item in data:
+        raw_ts = item.get('ts')  # assuming the column is named 'timestamp'
+        if raw_ts:
+            item['ts'] = parser.parse(raw_ts)
 
+
+    #print("items: ",items)
+    df = pd.DataFrame(data)
+    df = df.replace([np.nan, np.inf, -np.inf], "-")
+
+    df = df[df.gps_lon!="-"][df.gps_lat!="-"]
+
+    df = df.sort_values('ts')
+    df['ts'] = df['ts'].apply(lambda x: x.isoformat())
+    return df[['ts','gps_lat','gps_lon']]
+
+df = getTelemetry()
+
+@app.websocket("/ws/stream")
+async def stream_data(websocket: WebSocket):
+    await websocket.accept()
+    try:
+        for _, row in df.iterrows():
+            await websocket.send_json(row.to_dict())
+            await asyncio.sleep(1)
+    except WebSocketDisconnect:
+        print("Client disconnected")
 
 #this needs to be mounted and added after other routes are defined, otherwise those routes are not accessible
 app.mount("/", StaticFiles(directory=FRONTEND_BUILD_DIR, html=True), name="static")
