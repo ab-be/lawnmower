@@ -106,6 +106,8 @@ async def stream_data(websocket: WebSocket):
             await asyncio.sleep(1)
     except WebSocketDisconnect:
         print("Client disconnected")
+    except Exception as e:
+        print(f"Error: {e}")
 
 #this needs to be mounted and added after other routes are defined, otherwise those routes are not accessible
 app.mount("/", StaticFiles(directory=FRONTEND_BUILD_DIR, html=True), name="static")
