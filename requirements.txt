@@ -7,3 +7,5 @@ pandas
 numpy
 gunicorn
 apscheduler
+boto3
+python-dotenv

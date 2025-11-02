@@ -28,6 +28,12 @@ from contextlib import asynccontextmanager
 #import directories
 from app.core.config import DATA_DIR, FRONTEND_BUILD_DIR #__init__.py is needed in core to be able to import it
 
+import boto3
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+
 
 
 #----------------------------------------
@@ -52,6 +58,27 @@ app.add_middleware(
 @app.get("/home")
 async def root():
     return {"message": "Hello World"}
+
+@app.get("/api/v1/telemetry")
+async def getTelemetry():
+    try: 
+        #prod
+        dynamodb = boto3.resource('dynamodb', region_name="eu-north-1")
+    except:
+        #dev
+        dynamodb = boto3.resource(
+            'dynamodb',
+            region_name=os.getenv('AWS_REGION'),
+            aws_access_key_id=os.getenv('AWS_ACCESS_KEY_ID'),
+            aws_secret_access_key=os.getenv('AWS_SECRET_ACCESS_KEY')
+        )
+    table = dynamodb.Table('telemetry')
+    response = table.scan()
+    items = response.get('Items', [])
+    df = pd.DataFrame(items)
+
+    return df.to_dict(orient='records')
+
 
 #this needs to be mounted and added after other routes are defined, otherwise those routes are not accessible
 app.mount("/", StaticFiles(directory=FRONTEND_BUILD_DIR, html=True), name="static")
