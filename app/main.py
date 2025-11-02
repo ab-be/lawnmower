@@ -42,7 +42,7 @@ load_dotenv()
 #----------------------------------------
 app = FastAPI()
 
-origins = ['http://localhost','http://localhost:3000','http://127.0.0.1:5173']
+origins = ['http://localhost','http://localhost:3000','http://127.0.0.1:5173', 'http://16.171.39.45']
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
@@ -50,10 +50,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-# Define allowed origins
-ALLOWED_ORIGINS = {"ws://16.171.39.45:8000/","ws://16.171.39.45",'http://localhost:3000','http://127.0.0.1:5173'}
-
 
 
 #----------------------------------------
@@ -103,13 +99,6 @@ df = getTelemetry()
 
 @app.websocket("/ws/stream")
 async def stream_data(websocket: WebSocket):
-
-    #manually manage cors
-    origin = websocket.headers.get("origin")
-    if origin not in ALLOWED_ORIGINS:
-        await websocket.close(code=1008)  # Policy Violation
-        return
-
     await websocket.accept()
     try:
         for _, row in df.iterrows():
