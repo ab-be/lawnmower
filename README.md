@@ -11,3 +11,9 @@ uvicorn app.main:app --reload
 /utils: helpers 
 dependencies: shared dependencies like database sessions, get_current_user()
 
+## PUBLIC DOMAIN
+lawnmower.publicvm.com
+https://piehost.com/websocket-tester
+
+https://freedomain.one
+
