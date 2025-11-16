@@ -42,7 +42,8 @@ load_dotenv()
 #----------------------------------------
 app = FastAPI()
 
-origins = ['http://localhost','http://localhost:3000','http://127.0.0.1:5173', 'http://16.171.39.45', 'http://16.171.39.45:8000', 'http://16.171.39.45:3000', 'http://16.171.39.45:5173','https://test.lawnmower.publicvm.com','https://lawnmower.publicvm.com']
+#origins = ['http://localhost','http://localhost:3000','http://127.0.0.1:5173', 'http://16.171.39.45', 'http://16.171.39.45:8000', 'http://16.171.39.45:3000', 'http://16.171.39.45:5173','https://test.lawnmower.publicvm.com','https://lawnmower.publicvm.com']
+origins = ["*"]
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
@@ -112,7 +113,6 @@ async def stream_data(websocket: WebSocket):
         print("Client disconnected")
     except Exception as e:
         print(f"Error: {e}")
-
 
 
 #this needs to be mounted and added after other routes are defined, otherwise those routes are not accessible
