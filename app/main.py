@@ -97,7 +97,7 @@ def getTelemetry():
 
 df = getTelemetry()
 
-@app.websocket("/ws/stream")
+@app.websocket("/ws")
 async def stream_data(websocket: WebSocket):
     await websocket.accept()
     try:
