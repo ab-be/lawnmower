@@ -97,6 +97,8 @@ def getTelemetry():
 
 df = getTelemetry()
 
+app.mount("/", StaticFiles(directory=FRONTEND_BUILD_DIR, html=True), name="static")
+
 @app.websocket("/ws/stream")
 async def stream_data(websocket: WebSocket):
     await websocket.accept()
@@ -110,8 +112,7 @@ async def stream_data(websocket: WebSocket):
         print(f"Error: {e}")
 
 #this needs to be mounted and added after other routes are defined, otherwise those routes are not accessible
-app.mount("/", StaticFiles(directory=FRONTEND_BUILD_DIR, html=True), name="static")
-
+#app.mount("/", StaticFiles(directory=FRONTEND_BUILD_DIR, html=True), name="static")
 #@app.get("/")
 #async def serve_frontend(request: Request):
 #    print("Request headers: ",request.headers)
