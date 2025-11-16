@@ -109,6 +109,10 @@ async def stream_data(websocket: WebSocket):
     except Exception as e:
         print(f"Error: {e}")
 
+@app.get("/health")
+async def health_check():
+    return {"status":"healthy"}
+
 #this needs to be mounted and added after other routes are defined, otherwise those routes are not accessible
 app.mount("/", StaticFiles(directory=FRONTEND_BUILD_DIR, html=True), name="static")
 @app.get("/")
