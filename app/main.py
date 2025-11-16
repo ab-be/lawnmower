@@ -59,7 +59,7 @@ app.add_middleware(
 async def root():
     return {"message": "Hello World"}
 
-@app.get("/health")
+@app.get("/health2")
 async def health_check():
     return {"status":"healthy"}
 
