@@ -111,11 +111,12 @@ async def stream_data(websocket: WebSocket):
 
 #this needs to be mounted and added after other routes are defined, otherwise those routes are not accessible
 app.mount("/", StaticFiles(directory=FRONTEND_BUILD_DIR, html=True), name="static")
-@app.get("/")
-async def serve_frontend(request: Request):
-    print("Request headers: ",request.headers)
-    print("IP address of the client making the request: ",request.host)
-    return FileResponse(os.path.join(FRONTEND_BUILD_DIR, "index.html"))
+
+#@app.get("/")
+#async def serve_frontend(request: Request):
+#    print("Request headers: ",request.headers)
+#    print("IP address of the client making the request: ",request.host)
+#    return FileResponse(os.path.join(FRONTEND_BUILD_DIR, "index.html"))
 
 
 
