@@ -34,6 +34,30 @@ import os
 import asyncio
 from dateutil import parser
 
+'''
+#ROS2
+from fastapi import FastAPI
+import rclpy
+from std_msgs.msg import Float32
+
+app = FastAPI()
+rclpy.init()
+
+battery_state = {"value": None}
+
+def battery_callback(msg):
+    battery_state["value"] = msg.data
+
+node = rclpy.create_node('backend_listener')
+subscription = node.create_subscription(Float32, '/battery_state', battery_callback, 10)
+
+@app.get("/battery")
+def get_battery():
+    return {"battery": battery_state["value"]}
+
+'''
+
+
 load_dotenv()
 
 
@@ -43,7 +67,8 @@ load_dotenv()
 app = FastAPI()
 
 #origins = ['http://localhost','http://localhost:3000','http://127.0.0.1:5173', 'http://16.171.39.45', 'http://16.171.39.45:8000', 'http://16.171.39.45:3000', 'http://16.171.39.45:5173','https://test.lawnmower.publicvm.com','https://lawnmower.publicvm.com']
-origins = ["*"]
+origins = ['http://localhost','http://localhost:3000','http://127.0.0.1:5173', 'http://16.171.39.45', 'http://16.171.39.45:8000', 'http://16.171.39.45:3000', 'http://16.171.39.45:5173','https://test.lawnmower.publicvm.com','https://lawnmower.publicvm.com']
+#origins = ["*"]
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
@@ -85,7 +110,7 @@ def getTelemetry():
 
     # Parse timestamp column
     for item in data:
-        raw_ts = item.get('ts')  # assuming the column is named 'timestamp'
+        raw_ts = item.get('ts')  
         if raw_ts:
             item['ts'] = parser.parse(raw_ts)
 
