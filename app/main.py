@@ -162,11 +162,11 @@ def getTelemetry():
     #print("predicted_drop: ",predicted_drop)
 
     #test
-    df["predicted_failure_%"] = np.random.randint(0, 101, size=len(df))
-    df["predicted_battery_replacement_%"] = np.random.randint(0, 101, size=len(df))
-    df["predicted_obstacle_vicinity_%"] = np.random.randint(0, 101, size=len(df))
+    df["predicted_failure_PERC"] = np.random.randint(0, 101, size=len(df))
+    df["predicted_battery_replacement_PERC"] = np.random.randint(0, 101, size=len(df))
+    df["predicted_obstacle_vicinity_PERC"] = np.random.randint(0, 101, size=len(df))
 
-    return df[['ts','gps_lat','gps_lon','predicted_failure_%','predicted_battery_replacement_%','predicted_obstacle_vicinity_%']]
+    return df[['ts','gps_lat','gps_lon','predicted_failure_PERC','predicted_battery_replacement_PERC','predicted_obstacle_vicinity_PERC']]
 
 df = getTelemetry()
 
