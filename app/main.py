@@ -37,6 +37,8 @@ from dateutil import parser
 import joblib
 import os
 
+import random
+
 '''
 #ROS2
 from fastapi import FastAPI
@@ -159,7 +161,11 @@ def getTelemetry():
     #predicted_drop = float(battery_predictor.predict(features_scaled)[0])
     #print("predicted_drop: ",predicted_drop)
 
-    return df[['ts','gps_lat','gps_lon']]
+    df["predicted_failure_%"] = np.random.randint(0, 101, size=len(df))
+    df["predicted_battery_replacement_%"] = np.random.randint(0, 101, size=len(df))
+    df["predicted_obstacle_vicinity_%"] = np.random.randint(0, 101, size=len(df))
+
+    return df[['ts','gps_lat','gps_lon','predicted_failure_%','predicted_battery_replacement_%','predicted_obstacle_vicinity_%']]
 
 df = getTelemetry()
 
