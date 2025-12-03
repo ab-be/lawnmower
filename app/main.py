@@ -161,6 +161,7 @@ def getTelemetry():
     #predicted_drop = float(battery_predictor.predict(features_scaled)[0])
     #print("predicted_drop: ",predicted_drop)
 
+    #test
     df["predicted_failure_%"] = np.random.randint(0, 101, size=len(df))
     df["predicted_battery_replacement_%"] = np.random.randint(0, 101, size=len(df))
     df["predicted_obstacle_vicinity_%"] = np.random.randint(0, 101, size=len(df))
