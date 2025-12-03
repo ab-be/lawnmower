@@ -34,6 +34,9 @@ import os
 import asyncio
 from dateutil import parser
 
+import joblib
+import os
+
 '''
 #ROS2
 from fastapi import FastAPI
@@ -123,6 +126,39 @@ def getTelemetry():
 
     df = df.sort_values('ts')
     df['ts'] = df['ts'].apply(lambda x: x.isoformat())
+
+
+    #scale & predict
+    ''' BATTERY % https://gitlab.labranet.jamk.fi/AH2789/mmit-2025-lawn-mower/-/blob/main/machine-learning/api/services/battery_service.py
+    [
+                'battery_pct', 'battery_v',
+                'blade_current_a', 'wheel_current_l_a', 'wheel_current_r_a',
+                'speed_mps', 'gps_accuracy_m', 'satellite_count',
+                'imu_tilt_deg', 'motor_temp_c', 'chassis_temp_c',
+                'blade_vibration_rms', 'filter_dp_pa',
+                'conn_signal_dbm', 'conn_quality',
+                'uplink_latency_ms', 'downlink_latency_ms', 'packet_loss_pct'
+            ]
+
+    '''
+    #BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+    #SCALER_MODEL_PATH = os.path.join(BASE_DIR, "ml", "models", "battery_predictor_scaler.pkl")
+    #PRED_MODEL_PATH = os.path.join(BASE_DIR, "ml", "models", "battery_predictor_model.pkl")
+    #battery_scaler = joblib.load(SCALER_MODEL_PATH)
+    #battery_predictor = joblib.load(PRED_MODEL_PATH) 
+    #battery_features = [
+    #            'battery_pct', 'battery_v',
+    #            'blade_current_a', 'wheel_current_l_a', 'wheel_current_r_a',
+    #            'speed_mps', 'gps_accuracy_m', 'satellite_count',
+    #            'imu_tilt_deg', 'motor_temp_c', 'chassis_temp_c',
+    #            'blade_vibration_rms', 'filter_dp_pa',
+    #            'conn_signal_dbm', 'conn_quality',
+    #            'uplink_latency_ms', 'downlink_latency_ms', 'packet_loss_pct'
+    #        ]
+    #features_scaled = battery_scaler.transform(df[battery_features])
+    #predicted_drop = float(battery_predictor.predict(features_scaled)[0])
+    #print("predicted_drop: ",predicted_drop)
+
     return df[['ts','gps_lat','gps_lon']]
 
 df = getTelemetry()
@@ -142,6 +178,7 @@ async def stream_data(websocket: WebSocket):
 
 #PROD
 #this needs to be mounted and added after other routes are defined, otherwise those routes are not accessible
+
 app.mount("/", StaticFiles(directory=FRONTEND_BUILD_DIR, html=True), name="static")
 @app.get("/")
 async def serve_frontend(request: Request):
